@@ -1,0 +1,13 @@
+{
+    "id":"BoundlessWorlds",
+    "version":"0.1.1",
+    "author":"Esapetri",
+    "displayName":"Boundless Worlds",
+    "description":"World genenerator where imagination is only limit(and bugs).",
+    "dependencies":[{
+	"id" : "Core",
+	"minVersion" : "0.1.0"
+ 	}
+	],
+    "isServerSideOnly":false
+}
