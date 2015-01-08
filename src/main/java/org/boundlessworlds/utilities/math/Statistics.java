@@ -451,6 +451,31 @@ public class Statistics {
     	return -1;
     }
     
+    /**
+     * add number to array in descending order
+     * @param ain
+     * @param value
+     * @return
+     */
+    public static float[] sortAdd(final float[] ain,final int i2,final float value){
+    	float a[]=ain;
+    	int d=a.length+1;
+    	int i=0;
+    	float o[]=new float[d];
+    	while(i<i2){
+    		if(a[i]>value)
+    			break;
+    		o[i]=a[i];
+    		i++;
+    	}
+    	o[i]=value;
+    	while(i<i2){
+    		o[i+1]=a[i];
+    		i++;
+    	}
+    	return o;
+    }
+    
    
     
 }

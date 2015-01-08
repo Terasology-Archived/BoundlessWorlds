@@ -16,6 +16,8 @@
 package org.boundlessworlds.world.generator.facetProviders;
 
 import org.boundlessworlds.world.generation.facets.InfiniteGenFacet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.math.Region3i;
 import org.terasology.math.TeraMath;
 import org.terasology.math.Vector3i;
@@ -31,44 +33,54 @@ import org.terasology.world.generation.Updates;
 @Updates(@Facet(InfiniteGenFacet.class))
 public class SimplePlanetSimulatorProvider implements FacetProvider {
 
+	private static final Logger logger = LoggerFactory.getLogger(SimplePlanetSimulatorProvider.class);
+	
 	private int origoOffSet;
 	
 	private float densityMultifier;
 	private float upheightMultiplifier;
 	private float downheightMultiplifier;
 	
-	private int DensityFunction;
+	private int densityFunction;
 	private int upDensityFunction;
-	private int downDensityFunction;	
+	private int downDensityFunction;
+	
+	private boolean debug;
 	
 	/***
 	 * just copy noise values to density as they are. 
 	 * that is, if you don't set functions to other values. 
 	 */
 	public SimplePlanetSimulatorProvider(){
-		upheightMultiplifier=0.1f;
-		downheightMultiplifier=0.1f;
-		origoOffSet=0;
-		upDensityFunction=0;
-		downDensityFunction=0;
-		DensityFunction=0;
-		densityMultifier=1;
+		this.upheightMultiplifier=0.1f;
+		this.downheightMultiplifier=0.1f;
+		this.origoOffSet=0;
+		this.upDensityFunction=0;
+		this.downDensityFunction=0;
+		this.densityFunction=0;
+		this.densityMultifier=1;
+		
+		this.debug=false;
 	}
 	
 	/***
-	 * 
+	 * This is density value modification Class. it can grow or decrease values starting from origo. 
+	 * It is useful for created planet like environment or other way limited environments.
+	 * you need to set up or down density functions to make this class to do something.
 	 * @param origoOffSet
 	 * @param densityFunction
 	 * @param densityMultifier
 	 */
 	public SimplePlanetSimulatorProvider(int origoOffSet,int densityFunction,float densityMultifier){
 		this.origoOffSet=origoOffSet;
-		this.DensityFunction = densityFunction;
+		this.densityFunction = densityFunction;
 		this.densityMultifier= densityMultifier;
-		upheightMultiplifier=0.1f;
-		downheightMultiplifier=0.1f;
-		upDensityFunction=0;
-		downDensityFunction=0;
+		this.upheightMultiplifier=0.1f;
+		this.downheightMultiplifier=0.1f;
+		this.upDensityFunction=0;
+		this.downDensityFunction=0;
+		
+		this.debug=false;
 	}
 	
     @Override
@@ -79,6 +91,10 @@ public class SimplePlanetSimulatorProvider implements FacetProvider {
     public void process(GeneratingRegion region) {
     	InfiniteGenFacet facet = region.getRegionFacet(InfiniteGenFacet.class);
 
+    	long time=0;
+    	if(debug)
+    		time=System.currentTimeMillis();
+    	
         Region3i area = region.getRegion();
         int Y=area.minY();//real universal Y coordinate
         
@@ -86,7 +102,7 @@ public class SimplePlanetSimulatorProvider implements FacetProvider {
         	for (int x = facet.getRelativeRegion().minX(); x <= facet.getRelativeRegion().maxX(); ++x) {
         		for (int z = facet.getRelativeRegion().minZ(); z <= facet.getRelativeRegion().maxZ(); ++z) {
         			float denst = facet.get(new Vector3i(x,y,z));
-        			switch(this.DensityFunction){
+        			switch(this.densityFunction){
 	        			case 1:
 	        				denst *=densityMultifier;
 	        				break;
@@ -185,6 +201,8 @@ public class SimplePlanetSimulatorProvider implements FacetProvider {
             }
         	Y++;
         }
+        if(debug)
+        	logger.debug("chunk processed in "+((double)System.currentTimeMillis()-time)/1000 +"s");
     }
 	
 	private float linearGrowth(int y,float denst,float multiplifier){
@@ -236,7 +254,7 @@ public class SimplePlanetSimulatorProvider implements FacetProvider {
 	}
 	
 	private float linearIncrease(int y,float denst,float multiplifier){
-		double a= TeraMath.fastAbs(((y+origoOffSet)*multiplifier+1));
+		double a= TeraMath.fastAbs(((y+origoOffSet)*multiplifier));
 		if(a!=0){
     		return (float)((denst+denst*a));      		
 		}
@@ -244,7 +262,7 @@ public class SimplePlanetSimulatorProvider implements FacetProvider {
 	}
 	
 	private float linearSubraction(int y,float denst,float multiplifier){
-		double a= TeraMath.fastAbs(((y+origoOffSet)*multiplifier+1));
+		double a= TeraMath.fastAbs(((y+origoOffSet)*multiplifier));
 		if(a!=0){
     		return (float)((denst-denst*a));        		
 		}
@@ -261,7 +279,7 @@ public class SimplePlanetSimulatorProvider implements FacetProvider {
 	
 	/**
 	 * decides how much density changes depending distance to origo. fractions work best.
-	 * formula used is = ((y+origoOffSet)*downheightMultiplifier+1)
+	 * formula used is = ((y+origoOffSet)*upheightMultiplifier+1)
 	 * so value is in the end added to 1
 	 * @param heightMultiplifier the heightMultiplifier value to set 
 	 */
@@ -350,6 +368,15 @@ public class SimplePlanetSimulatorProvider implements FacetProvider {
 	public void setOrigoOffSet(int origoOffSet) {
 		this.origoOffSet = origoOffSet;
 	}
+	
+	/**
+	 * this offsets origo for density calculations.
+	 * so +100 would mean that 100 is seen as origo for calculations. 
+	 * @param origoOffSet the origoOffSet to set
+	 */
+	public void setOrigo(int origoOffSet) {
+		this.origoOffSet = -origoOffSet;
+	}
 
 	/**
 	 * @return the densityMultifier
@@ -370,7 +397,7 @@ public class SimplePlanetSimulatorProvider implements FacetProvider {
 	 * @return the densityFunction
 	 */
 	public int getDensityFunction() {
-		return DensityFunction;
+		return densityFunction;
 	}
 
 	/**
@@ -381,7 +408,21 @@ public class SimplePlanetSimulatorProvider implements FacetProvider {
 	 * @param densityFunction the densityFunction to set
 	 */
 	public void setDensityFunction(int densityFunction) {
-		DensityFunction = densityFunction;
+		this.densityFunction = densityFunction;
+	}
+
+	/**
+	 * @return the debug
+	 */
+	public boolean isDebug() {
+		return debug;
+	}
+
+	/**
+	 * @param debug the debug to set
+	 */
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 	
 }

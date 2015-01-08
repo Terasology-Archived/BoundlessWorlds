@@ -45,16 +45,16 @@ public class AreaLimitAdapter implements Noise3D,Noise2D {
     /**
      * 
      * @param noise
-     * @param xcenter
-     * @param xwidth
-     * @param xignore
-     * @param ycenter
-     * @param ywidth
-     * @param yignore
-     * @param zcenter
-     * @param zwidth
-     * @param zignore
-     * @param function
+     * @param xcenter center of area
+     * @param xwidth 0 causes this axis to be ignored
+     * @param xignore if non zero that side of valued noise is ignored.
+     * @param ycenter center of area
+     * @param ywidth 0 causes this axis to be ignored
+     * @param yignore if non zero that side of valued noise is ignored.
+     * @param zcenter center of area
+     * @param zwidth 0 causes this axis to be ignored
+     * @param zignore if non zero that side of valued noise is ignored.
+     * @param function this decides how values grow towards center. 0-linear 1-exponential 2-more than exponential
      */
     public AreaLimitAdapter(Noise3D noise,float xcenter, float xwidth, int xignore, float ycenter, float ywidth, int yignore,float zcenter, float zwidth, int zignore,int function) {
     	this.noise3=noise;

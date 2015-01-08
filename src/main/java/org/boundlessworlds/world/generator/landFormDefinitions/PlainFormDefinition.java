@@ -34,7 +34,7 @@ public class PlainFormDefinition extends LandFormDefinition implements Noise3D {
      * @param formValue
      */
 	public PlainFormDefinition(Long seed){
-    	super(0);
+    	super(10);
     	this.maxDensity=3f;
     	this.minDensity=Float.MIN_VALUE;
     	this.maxAltitude=1000f;
@@ -45,7 +45,7 @@ public class PlainFormDefinition extends LandFormDefinition implements Noise3D {
     	this.minHumidity=Float.MIN_VALUE;
     	
     	this.noiseList.add(new SubSampledNoise3D(
-    			new MultiplicationAdapter(new AdditionAdapter(new BrownianNoise3D(new SimplexNoise(seed),2),-0.4f),0.8f),
+    			new MultiplicationAdapter(new AdditionAdapter(new BrownianNoise3D(new SimplexNoise(seed),2),0.1f),0.8f),
     					new Vector3f(0.0005f, 0.0005f, 0.0005f),4
     			)
     	);

@@ -42,6 +42,8 @@ public class LandFormDefinition implements Noise3D {
 	
     protected float minHumidity;
     protected float maxHumidity;
+    
+    protected float scoreOffset;
 
     
     /**
@@ -59,6 +61,7 @@ public class LandFormDefinition implements Noise3D {
     	this.maxHumidity=0;
     	this.minHumidity=0;
     	this.noiseList = new ArrayList<Noise3D>();
+    	this.scoreOffset=0;
     }
     
     /**
@@ -86,6 +89,7 @@ public class LandFormDefinition implements Noise3D {
     	this.maxHumidity=maxHumidity;
     	this.minHumidity=minHumidity;
     	this.noiseList = new ArrayList<Noise3D>();
+    	this.scoreOffset=0;
     }
     
     /**
@@ -114,6 +118,7 @@ public class LandFormDefinition implements Noise3D {
     	this.maxHumidity=maxHumidity;
     	this.minHumidity=minHumidity;
     	this.noiseList = noiseList;
+    	this.scoreOffset=0;
     }
     
     @Override
@@ -128,6 +133,7 @@ public class LandFormDefinition implements Noise3D {
 		return n;
     }
 
+    //TODO In need of heavy optimization
     /**
      * get Score of suitability of this terrain generator for these conditions.
      *  zero is best suitability, smaller values mean worse suitability
@@ -139,42 +145,53 @@ public class LandFormDefinition implements Noise3D {
      * @return
      */
     public float getScore(final float altitude,final float form,final float density,final float humidity,final float temperature) {
-    	int result=0;
+    	float result=this.scoreOffset;
     	
-    	if(form>this.formValue){
-    		result-=form-this.formValue*100;
-    	}else
-    	if(form<this.formValue){
-    		result+=form+this.formValue*100;
+    	if(this.formValue!=0){
+	    	if(form>this.formValue){
+	    		result-=(form-this.formValue)*10;
+	    	}else
+		    	if(form<this.formValue){
+		    		result+=(form+this.formValue)*10;
+	    	}
     	}
     	
-    	if(altitude>this.maxAltitude){
-    		result-=altitude-this.maxAltitude;
-    	}else
-    	if(altitude<this.minAltitude){
-    		result+=altitude+this.minAltitude;
-    	}
+    	//if(this.maxAltitude!=Float.MAX_VALUE && this.minAltitude!=Float.MIN_VALUE){
+    		if( altitude>this.maxAltitude){
+    			result-=altitude-this.maxAltitude;
+    		}else
+	    		if(altitude<this.minAltitude){
+	    			result+=altitude+this.minAltitude;
+    		}
+    	//}
     	
-    	if(density>this.maxDensity){
-    		result-=(density-this.maxDensity)*100;
-    	}else
-    	if(density<this.minDensity){
-    		result+=(density+this.minDensity)*100;
-    	}
+    	//if(this.maxDensity!=Float.MAX_VALUE && this.minDensity!=Float.MIN_VALUE){
+    		if(density>this.maxDensity){
+    			result-=(density-this.maxDensity)*50;
+    		}else
+    			if(density<this.minDensity){
+    				result+=(density+this.minDensity)*50;
+    		}
+    	//}
     	
-    	if(humidity>this.maxHumidity){
-    		result-=(humidity-this.maxHumidity)*10000;
-    	}else
-    	if(humidity<this.minHumidity){
-    		result+=(humidity+this.minHumidity)*10000;
-    	}
+    	//if(this.maxHumidity!=Float.MAX_VALUE && this.minHumidity!=Float.MIN_VALUE){
+	    	if(humidity>this.maxHumidity){
+	    		result-=(humidity-this.maxHumidity)*100;
+	    	}else
+		    	if(humidity<this.minHumidity){
+		    		result+=(humidity+this.minHumidity)*100;
+	    	}
+    	//}
     	
-    	if(temperature>this.maxTemperature){
-    		result-=(temperature-this.maxTemperature)*10;
-    	}else
-    	if(temperature<this.minTemperature){
-    		result+=(temperature+this.minTemperature)*10;
-    	}
+    	//if(this.maxTemperature!=Float.MAX_VALUE && this.minTemperature!=Float.MIN_VALUE){
+	    	if(temperature>this.maxTemperature){
+	    		result-=(temperature-this.maxTemperature)*10;
+	    	}else
+		    	if(temperature<this.minTemperature){
+		    		result+=(temperature+this.minTemperature)*10;
+	    	}
+    	//}
+    	
     	return result;
     }
     
@@ -306,5 +323,19 @@ public class LandFormDefinition implements Noise3D {
 	 */
 	public void setMaxAltitude(float maxAltitude) {
 		this.maxAltitude = maxAltitude;
+	}
+
+	/**
+	 * @return the scoreOffset
+	 */
+	public float getScoreOffset() {
+		return scoreOffset;
+	}
+
+	/**
+	 * @param scoreOffset the scoreOffset to set
+	 */
+	public void setScoreOffset(float scoreOffset) {
+		this.scoreOffset = scoreOffset;
 	}
 }

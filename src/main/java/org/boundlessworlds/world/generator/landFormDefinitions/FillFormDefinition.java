@@ -18,20 +18,25 @@ package org.boundlessworlds.world.generator.landFormDefinitions;
 import javax.vecmath.Vector3f;
 
 import org.boundlessworlds.utilities.procedural.adapter.AdditionAdapter;
+import org.boundlessworlds.utilities.procedural.adapter.MultiplicationAdapter;
+import org.boundlessworlds.world.generation.facets.InfiniteGenFacet;
+import org.terasology.utilities.procedural.BrownianNoise3D;
 import org.terasology.utilities.procedural.Noise3D;
 import org.terasology.utilities.procedural.SimplexNoise;
 import org.terasology.utilities.procedural.SubSampledNoise3D;
+import org.terasology.world.generation.Produces;
 
-public class VoidFormDefinition extends LandFormDefinition implements Noise3D {
+@Produces(InfiniteGenFacet.class)
+public class FillFormDefinition extends LandFormDefinition implements Noise3D {
     
     /**
      * 
      * @param formValue
      */
-	public VoidFormDefinition(Long seed){
+	public FillFormDefinition(Long seed){
     	super(0);
-    	this.maxDensity=-200f;
-    	this.minDensity=Float.MIN_VALUE;
+    	this.maxDensity=Float.MAX_VALUE;
+    	this.minDensity=200F;
     	this.maxAltitude=Float.MAX_VALUE;
     	this.minAltitude=Float.MIN_VALUE;
     	this.maxTemperature=Float.MAX_VALUE;
@@ -39,10 +44,12 @@ public class VoidFormDefinition extends LandFormDefinition implements Noise3D {
     	this.maxHumidity=Float.MAX_VALUE;
     	this.minHumidity=Float.MIN_VALUE;
     	
-    	this.setScoreOffset(-800f);
+    	this.setScoreOffset(-400f);
     	
-    	this.noiseList.add(new SubSampledNoise3D(new AdditionAdapter(new SimplexNoise(seed),-1f),
-				new Vector3f(0.02f, 0.02f, 0.02f),4));
+    	this.noiseList.add(new SubSampledNoise3D(
+    			new MultiplicationAdapter(new AdditionAdapter(new BrownianNoise3D(new SimplexNoise(seed),2),0.9f),5),
+				new Vector3f(0.05f, 0.05f, 0.05f),4
+		));
     }
     
 }

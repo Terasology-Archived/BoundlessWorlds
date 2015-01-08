@@ -27,6 +27,7 @@ import org.boundlessworlds.world.generation.facets.TemperatureFacet;
 import org.boundlessworlds.world.generator.landFormDefinitions.LandFormDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.math.TeraMath;
 import org.terasology.world.generation.Facet;
 import org.terasology.world.generation.FacetProvider;
 import org.terasology.world.generation.GeneratingRegion;
@@ -44,10 +45,13 @@ public class LandFormProvider implements FacetProvider {
     protected float modulus;
     protected float multifier;
     protected float increase;
+    
+    protected float orginalRatio;
 
+    protected boolean debug;
     
     /**
-     * 
+     * Note DensityValues should be between [-1000-1000] for generaton to work.
      * @param frequency
      * @param multificator
      * @param increase
@@ -58,10 +62,28 @@ public class LandFormProvider implements FacetProvider {
     	this.modulus=frequency;
     	this.multifier=multificator;
     	this.increase=increase;
+    	this.orginalRatio=0;
+    	this.debug=false;
     }
     
     /**
-     * 
+     * Note DensityValues should be between [-1000-1000] for generaton to work.
+     * @param frequency
+     * @param multificator
+     * @param increase
+     */
+    public LandFormProvider(float orginalRatio,float frequency, float multificator,float increase){
+    	this.noiseList = new ArrayList<LandFormDefinition>();
+    	
+    	this.modulus=frequency;
+    	this.multifier=multificator;
+    	this.increase=increase;
+    	this.orginalRatio=orginalRatio;
+    	this.debug=false;
+    }
+    
+    /**
+     * Note DensityValues should be between [-1000-1000] for generaton to work.
      * @param noiseList
      * @param frequency
      * @param multificator
@@ -73,6 +95,8 @@ public class LandFormProvider implements FacetProvider {
     	this.modulus=frequency;
     	this.multifier=multificator;
     	this.increase=increase;
+    	this.orginalRatio=0;
+    	this.debug=false;
     }
     
     
@@ -82,9 +106,13 @@ public class LandFormProvider implements FacetProvider {
     
     @Override
     public void process(GeneratingRegion region) {
-    	logger.info("Generating new chunk");
-    	if(this.noiseList.size()<1)	
+    	if(this.noiseList.size()<1){	
         	return;
+        }
+    	long time=0;
+    	if(debug){
+    		time=System.currentTimeMillis();
+    	}
         InfiniteGenFacet denFacet =  region.getRegionFacet(InfiniteGenFacet.class);
         TemperatureFacet tempFacet =  region.getRegionFacet(TemperatureFacet.class);
         HumidityFacet humFacet =  region.getRegionFacet(HumidityFacet.class);
@@ -93,8 +121,6 @@ public class LandFormProvider implements FacetProvider {
 		int x1 = denFacet.getWorldRegion().minX();
 		int y1 = denFacet.getWorldRegion().minY();
 		int z1 = denFacet.getWorldRegion().minZ();
-
-       // iii++;
         	        
         for(int x=denFacet.getRelativeRegion().minX();x<denFacet.getRelativeRegion().maxX()+1;x++){
         	for(int y=denFacet.getRelativeRegion().minY();y<denFacet.getRelativeRegion().maxY()+1;y++){
@@ -108,25 +134,36 @@ public class LandFormProvider implements FacetProvider {
         			float n = 0;
         			int i=0;
         			
-        			float[] scores= new float[this.noiseList.size()];
+        			//TODO some really clever optimization here could do miracles for performance
+        			int depth=this.noiseList.size();
+        			float[] scores=  new float[depth];
+        			float[] t= new float[depth];
         			while(i<this.noiseList.size()){
         				scores[i]=this.noiseList.get(i).getScore(y1, form, orginal, humidity, temperature);
+        				t=Statistics.sortAdd(t, i, scores[i]);
+        				//i could save position of score in orginal array and save some
+        				//cpu which is used in searching later.
         				i++;
         			}
         			
-        			//arrange scores 
-        			float[] t=scores;
-        			Arrays.sort(t);
-        			
         			//find best
-        			i=Statistics.find(scores,t[this.noiseList.size()-1]);
-        			n+=(this.noiseList.get(i).noise(x1, y1, z1))/2;
+        			float best=t[this.noiseList.size()-1];
+        			i=Statistics.find(scores,best);
+        			n=(this.noiseList.get(i).noise(x1, y1, z1));
         			
         			//find second best
         			if(this.noiseList.size()>1){
-        				i=Statistics.find(scores,t[this.noiseList.size()-2]);
-        				n+=(this.noiseList.get(i).noise(x1, y1, z1))/2;
+        				float second=t[this.noiseList.size()-2];
+        				i=Statistics.find(scores,second);
+        				//percentage of two noises, note all scores are negative. and thus sing disappear. after that smaller score has bigger value.
+        				float p=1;
+        				if(best<-1 && second<-1){
+        					p=TeraMath.fastAbs(best/second);
+        				}
+        				n= n*(1-p);
+        				n+=(this.noiseList.get(i).noise(x1, y1, z1)*p );
         			}
+        			
         			
         			
         			n*=multifier;
@@ -134,8 +171,12 @@ public class LandFormProvider implements FacetProvider {
                 		n=(float) (n %modulus);
                 	}
                 	n+=increase;
-        			denFacet.set(x, y, z, orginal+n);
-        			
+                	if(this.orginalRatio!=0){
+                		denFacet.set(x, y, z, n+orginal*this.orginalRatio);
+                	}else{
+                		denFacet.set(x, y, z, n);
+                	}
+                	
                 	if(denFacet.getMax()<n){
                 		denFacet.setMax(n);
                 	}else if(denFacet.getMin()>n){
@@ -149,6 +190,9 @@ public class LandFormProvider implements FacetProvider {
 			y1 = denFacet.getWorldRegion().minY();
 			x1++;
 		}
+        if(debug){
+        	logger.debug("chunk generated in " +((double)System.currentTimeMillis()-time)/1000 +" s");
+        	}
     }
 
     
@@ -196,5 +240,36 @@ public class LandFormProvider implements FacetProvider {
 	 */
 	public void setIncrease(float increase) {
 		this.increase = increase;
+	}
+
+	/**
+	 * @return the orginalRatio
+	 */
+	public float getOrginalRatio() {
+		return orginalRatio;
+	}
+
+	/**
+	 * note that orginal noise should be between -1000-1000
+	 * and values of these noises are -1 -1 per layer.
+	 * so this value should be 0.001*wanted value 
+	 * @param orginalRatio the orginalRatio to set
+	 */
+	public void setOrginalRatio(float orginalRatio) {
+		this.orginalRatio = orginalRatio;
+	}
+
+	/**
+	 * @return the debug
+	 */
+	public boolean isDebug() {
+		return debug;
+	}
+
+	/**
+	 * @param debug the debug to set
+	 */
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 }

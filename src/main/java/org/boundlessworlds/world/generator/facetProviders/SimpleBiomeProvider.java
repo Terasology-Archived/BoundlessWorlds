@@ -19,6 +19,7 @@ import org.boundlessworlds.world.InfGenBiome;
 import org.boundlessworlds.world.generation.facets.BiomeFacet;
 import org.boundlessworlds.world.generation.facets.HumidityFacet;
 import org.boundlessworlds.world.generation.facets.TemperatureFacet;
+import org.terasology.world.biomes.Biome;
 import org.terasology.world.generation.Border3D;
 import org.terasology.world.generation.Facet;
 import org.terasology.world.generation.FacetProvider;
@@ -32,11 +33,17 @@ import org.terasology.world.generation.Requires;
  */
 @Produces(BiomeFacet.class)
 @Requires({@Facet(TemperatureFacet.class), @Facet(HumidityFacet.class)})
-public class BiomeProvider implements FacetProvider {
+public class SimpleBiomeProvider implements FacetProvider {
 
-    @Override
-    public void setSeed(long seed) {
-    }
+	protected InfGenBiome biome;
+	
+	/**
+	 * 
+	 * @param in
+	 */
+	public SimpleBiomeProvider(InfGenBiome in){
+		this.biome=in;
+	}
 
     @Override
     public void process(GeneratingRegion region) {
@@ -46,23 +53,33 @@ public class BiomeProvider implements FacetProvider {
         Border3D border = region.getBorderForFacet(BiomeFacet.class);
         BiomeFacet biomeFacet = new BiomeFacet(region.getRegion(), border);
 
-		int x1 = biomeFacet.getWorldRegion().minX();
-		int y1 = biomeFacet.getWorldRegion().minY();
-		int z1 = biomeFacet.getWorldRegion().minZ();
-        
-		//TODO finnish this
         for(int x=biomeFacet.getRelativeRegion().minX();x<biomeFacet.getRelativeRegion().maxX()+1;x++){
         	for(int y=biomeFacet.getRelativeRegion().minY();y<biomeFacet.getRelativeRegion().maxY()+1;y++){
         		for(int z=biomeFacet.getRelativeRegion().minZ();z<biomeFacet.getRelativeRegion().maxZ()+1;z++){
-        			biomeFacet.set(x, y, z, InfGenBiome.DEFAULT);
-                	z1++;
+        			biomeFacet.set(x, y, z, this.biome);
         		}
-        		z1 = biomeFacet.getWorldRegion().minZ();
-        		y1++;
         	}
-        	y1 = biomeFacet.getWorldRegion().minY();
-        	x1++;
         }
         region.setRegionFacet(BiomeFacet.class, biomeFacet);
     }
+
+	/**
+	 * @return the biome
+	 */
+	public InfGenBiome getBiome() {
+		return biome;
+	}
+
+	/**
+	 * @param biome the biome to use
+	 */
+	public void setBiome(InfGenBiome biome) {
+		this.biome = biome;
+	}
+
+	/**
+	 * does nothing
+	 */
+	public void setSeed(long seed) {
+	}
 }

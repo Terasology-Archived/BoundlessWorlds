@@ -76,11 +76,11 @@ public class InfiniteGenSolidRasterizer implements WorldRasterizer {
             	if(sealevel){
 	            	int posY = pos.y + chunk.getChunkWorldOffsetY();
 	
-	                if (posY == seafacet.getSeaLevel() && InfGenBiome.SNOW == biomeFacet.get(pos)) {
+	                if (posY == seafacet.getSeaLevel() && InfGenBiome.POLARDESERT == biomeFacet.get(pos)) {
 	                	chunk.setBlock(pos,ice);
 	                } else if (posY <= seafacet.getSeaLevel()) {
 	                	chunk.setBlock(pos,water);
-	                }else if(density>0.8 && ( posY>4000 || InfGenBiome.SNOW == biomeFacet.get(pos))){
+	                }else if(density>0.8 && ( posY>4000 || InfGenBiome.POLARDESERT == biomeFacet.get(pos))){
 	                	chunk.setBlock(pos,snow);
 	                }
             	}

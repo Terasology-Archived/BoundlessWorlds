@@ -21,8 +21,8 @@ import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.logic.console.Command;
-import org.terasology.logic.console.CommandParam;
+import org.terasology.logic.console.commandSystem.annotations.Command;
+import org.terasology.logic.console.commandSystem.annotations.CommandParam;
 import org.terasology.registry.In;
 
 /**
@@ -37,30 +37,30 @@ public class BWCommands extends BaseComponentSystem {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BWCommands.class);
 	
-    @Command(shortDescription = "prints text to log, Info level")
+    @Command(shortDescription = "prints text to log, Info level", runOnServer = true)
     public String logInfo(@CommandParam("Text") String info,EntityRef client) {
     	logger.info(client.getId()+ ":" + info);
         return "wrote \'" + info +" \' to log";
     }
     
-    @Command(shortDescription = "prints text to log, Warn level")
+    @Command(shortDescription = "prints text to log, Warn level", runOnServer = true)
     public String logWarn(@CommandParam("Text") String info,EntityRef client) {
     	logger.warn(client.getId()+ ":" +info);
         return "wrote \'" + info +" \' to log";
     }
     
-    @Command(shortDescription = "prints text to log, Error level")
+    @Command(shortDescription = "prints text to log, Error level", runOnServer = true)
     public String logError(@CommandParam("Text") String info,EntityRef client) {
     	logger.error(client.getId()+ ":" +info);
         return "wrote \'" + info +" \' to log";
     }
     
-    @Command(shortDescription = "Displays debug information of you")
+    @Command(shortDescription = "Displays debug information of you", runOnServer = true)
     public String debugSelf(EntityRef client) {
         return client.toFullDescription();
     }
     
-    @Command(shortDescription = "Displays debug information of entity by entity ref number")
+    @Command(shortDescription = "Displays debug information of entity by entity ref number", runOnServer = true)
     public String debugEntityByID(@CommandParam("entity ref") final int targetID) {
     	EntityRef target=entityManager.getEntity(targetID);
         return target.toFullDescription();

@@ -45,7 +45,34 @@ public class DebugSolidRasterizer implements WorldRasterizer {
     private Block dirt;
     private Block stone;
     
-    private boolean sea=true;
+    private int sea;
+    private boolean iceGeneration;
+    
+    /**
+     * 
+     */
+    public DebugSolidRasterizer(){
+    	this.sea=1;
+    	iceGeneration=true;
+    }
+    
+    /**
+     * 
+     * @param seaLevel
+     */
+    public DebugSolidRasterizer(int seaLevel){
+    	this.sea=seaLevel;
+    	iceGeneration=true;
+    }
+    
+    /**
+     * 
+     * @param seaLevel
+     */
+    public DebugSolidRasterizer(int seaLevel, boolean ice){
+    	this.sea=seaLevel;
+    	iceGeneration=ice;
+    }
 
     @Override
     public void initialize() {
@@ -57,17 +84,10 @@ public class DebugSolidRasterizer implements WorldRasterizer {
         stone = blockManager.getBlock("core:stone");
     }
 
-    /**
-	 * @return the sea
-	 */
-	public boolean isSea() {
-		return sea;
-	}
-
 	/**
 	 * @param sea the sea to set
 	 */
-	public void setSea(boolean sea) {
+	public void setSea(int sea) {
 		this.sea = sea;
 	}
 
@@ -81,13 +101,15 @@ public class DebugSolidRasterizer implements WorldRasterizer {
             
             float density = solidityFacet.get(pos);
             if (density <= 0) {
-            	if(sea){
+            	if(sea!=0){
 	            	int posY = pos.y + chunk.getChunkWorldOffsetY();
-	                
+	                if(sea>posY)
 	            	chunk.setBlock(pos, water); 
                 }
             } else if (density < 1) {
+            	if(this.iceGeneration){
                 chunk.setBlock(pos, ice);
+                }
             }else if (density < 10) {
                 chunk.setBlock(pos, sand);
             }else if (density < 100) {

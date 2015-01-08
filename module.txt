@@ -1,9 +1,9 @@
 {
     "id":"BoundlessWorlds",
-    "version":"0.1.1",
+    "version":"0.1.2",
     "author":"Esapetri",
     "displayName":"Boundless Worlds",
-    "description":"World genenerator where imagination is only limit(and bugs).",
+    "description":"World generator where imagination is only limit(and bugs).",
     "dependencies":[{
 	"id" : "Core",
 	"minVersion" : "0.1.0"
