@@ -15,12 +15,12 @@
  */
 package org.boundlessworlds.world.generator.facetProviders;
 
-import javax.vecmath.Vector3f;
 
 import org.boundlessworlds.utilities.procedural.adapter.AdditionAdapter;
 import org.boundlessworlds.utilities.procedural.adapter.AreaLimitAdapter;
 import org.boundlessworlds.utilities.procedural.adapter.Noise2DTo3DAdapter;
 import org.boundlessworlds.world.generation.facets.InfiniteGenFacet;
+import org.terasology.math.geom.Vector3f;
 import org.terasology.utilities.procedural.Noise2D;
 import org.terasology.utilities.procedural.Noise3D;
 import org.terasology.world.generation.Facet;

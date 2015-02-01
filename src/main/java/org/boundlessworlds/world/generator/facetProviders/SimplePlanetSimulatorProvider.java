@@ -83,12 +83,10 @@ public class SimplePlanetSimulatorProvider implements FacetProvider {
 		this.debug=false;
 	}
 	
-    @Override
     public void setSeed(long seed) {
     }
     
-	@Override
-    public void process(GeneratingRegion region) {
+	public void process(GeneratingRegion region) {
     	InfiniteGenFacet facet = region.getRegionFacet(InfiniteGenFacet.class);
 
     	long time=0;

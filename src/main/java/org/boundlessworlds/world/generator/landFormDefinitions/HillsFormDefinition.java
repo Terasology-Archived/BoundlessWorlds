@@ -15,10 +15,10 @@
  */
 package org.boundlessworlds.world.generator.landFormDefinitions;
 
-import javax.vecmath.Vector3f;
 
 import org.boundlessworlds.utilities.procedural.adapter.AdditionAdapter;
 import org.boundlessworlds.world.generation.facets.InfiniteGenFacet;
+import org.terasology.math.geom.Vector3f;
 import org.terasology.utilities.procedural.BrownianNoise3D;
 import org.terasology.utilities.procedural.Noise3D;
 import org.terasology.utilities.procedural.SimplexNoise;

@@ -51,11 +51,9 @@ public class Noise3DBaseFormProvider implements FacetProvider {
     	this.noise = noise;
     }
     
-    @Override
     public void setSeed(long seed) {
     }
     
-    @Override
     public void process(GeneratingRegion region) {
     	Border3D border = region.getBorderForFacet(FormFacet.class);
     	FormFacet formFacet = new FormFacet(region.getRegion(), border);

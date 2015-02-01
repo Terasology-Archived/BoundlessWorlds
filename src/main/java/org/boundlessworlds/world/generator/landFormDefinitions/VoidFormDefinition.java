@@ -15,9 +15,8 @@
  */
 package org.boundlessworlds.world.generator.landFormDefinitions;
 
-import javax.vecmath.Vector3f;
-
 import org.boundlessworlds.utilities.procedural.adapter.AdditionAdapter;
+import org.terasology.math.geom.Vector3f;
 import org.terasology.utilities.procedural.Noise3D;
 import org.terasology.utilities.procedural.SimplexNoise;
 import org.terasology.utilities.procedural.SubSampledNoise3D;
@@ -28,7 +27,7 @@ public class VoidFormDefinition extends LandFormDefinition implements Noise3D {
      * 
      * @param formValue
      */
-	public VoidFormDefinition(Long seed){
+	public VoidFormDefinition(long seed){
     	super(0);
     	this.maxDensity=-200f;
     	this.minDensity=Float.MIN_VALUE;

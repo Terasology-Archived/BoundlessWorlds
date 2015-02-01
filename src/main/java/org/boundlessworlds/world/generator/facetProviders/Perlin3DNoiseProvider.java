@@ -15,9 +15,9 @@
  */
 package org.boundlessworlds.world.generator.facetProviders;
 
-import javax.vecmath.Vector3f;
 
 import org.boundlessworlds.world.generation.facets.InfiniteGenFacet;
+import org.terasology.math.geom.Vector3f;
 import org.terasology.utilities.procedural.PerlinNoise;
 import org.terasology.world.generation.Facet;
 import org.terasology.world.generation.FacetProvider;

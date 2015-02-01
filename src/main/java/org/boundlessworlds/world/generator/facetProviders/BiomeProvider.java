@@ -34,11 +34,9 @@ import org.terasology.world.generation.Requires;
 @Requires({@Facet(TemperatureFacet.class), @Facet(HumidityFacet.class)})
 public class BiomeProvider implements FacetProvider {
 
-    @Override
     public void setSeed(long seed) {
     }
 
-    @Override
     public void process(GeneratingRegion region) {
         TemperatureFacet temperature = region.getRegionFacet(TemperatureFacet.class);
         HumidityFacet surfaceHumidityFacet = region.getRegionFacet(HumidityFacet.class);

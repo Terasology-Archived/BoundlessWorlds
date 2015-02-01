@@ -45,7 +45,6 @@ public class SimpleBiomeProvider implements FacetProvider {
 		this.biome=in;
 	}
 
-    @Override
     public void process(GeneratingRegion region) {
         TemperatureFacet temperature = region.getRegionFacet(TemperatureFacet.class);
         HumidityFacet surfaceHumidityFacet = region.getRegionFacet(HumidityFacet.class);

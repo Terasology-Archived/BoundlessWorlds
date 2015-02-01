@@ -15,9 +15,8 @@
  */
 package org.boundlessworlds.world.generator.facetProviders;
 
-import javax.vecmath.Vector3f;
-
 import org.boundlessworlds.world.generation.facets.HumidityFacet;
+import org.terasology.math.geom.Vector3f;
 import org.terasology.utilities.procedural.Noise3D;
 import org.terasology.utilities.procedural.SubSampledNoise3D;
 import org.terasology.world.generation.Facet;
@@ -56,11 +55,9 @@ public class Noise3DHumidityProvider implements FacetProvider {
     	this.surfaceNoise = new SubSampledNoise3D(noise, zoom, 4);
     }
     
-    @Override
     public void setSeed(long seed) {
     }
     
-    @Override
     public void process(GeneratingRegion region) {
     	HumidityFacet facet =  region.getRegionFacet(HumidityFacet.class);
         float[] noise = surfaceNoise.noise(facet.getWorldRegion());
