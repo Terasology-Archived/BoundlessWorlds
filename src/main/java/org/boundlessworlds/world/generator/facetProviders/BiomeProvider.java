@@ -28,7 +28,7 @@ import org.terasology.world.generation.Requires;
 
 /**
  * Determines the biome based on temperature and humidity
- * @author Is‰nt‰
+ * @author Is√§nt√§
  */
 @Produces(BiomeFacet.class)
 @Requires({@Facet(TemperatureFacet.class), @Facet(HumidityFacet.class)})

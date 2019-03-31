@@ -18,8 +18,8 @@ package org.boundlessworlds.world.generator.rasterizers;
 import org.boundlessworlds.world.InfGenBiome;
 import org.boundlessworlds.world.generation.facets.BiomeFacet;
 import org.boundlessworlds.world.generation.facets.InfiniteGenFacet;
-import org.terasology.math.Vector2i;
-import org.terasology.math.Vector3i;
+import org.terasology.biomesAPI.BiomeRegistry;
+import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
@@ -27,7 +27,6 @@ import org.terasology.world.chunks.ChunkConstants;
 import org.terasology.world.chunks.CoreChunk;
 import org.terasology.world.generation.Region;
 import org.terasology.world.generation.WorldRasterizer;
-import org.terasology.world.generation.facets.DensityFacet;
 import org.terasology.world.generation.facets.SeaLevelFacet;
 
 
@@ -41,9 +40,8 @@ public class InfiniteGenSolidRasterizer implements WorldRasterizer {
     private Block ice;
     private Block stone;
     private Block sand;
-    private Block grass;
     private Block snow;
-    private Block dirt;
+    private BiomeRegistry biomeRegistry;
 
     @Override
     public void initialize() {
@@ -53,7 +51,7 @@ public class InfiniteGenSolidRasterizer implements WorldRasterizer {
         ice = blockManager.getBlock("core:Ice");
         sand = blockManager.getBlock("core:Sand");
         snow = blockManager.getBlock("core:Snow");
-        dirt = blockManager.getBlock("core:Dirt");
+        biomeRegistry = CoreRegistry.get(BiomeRegistry.class);
     }
 
     @Override
@@ -69,7 +67,7 @@ public class InfiniteGenSolidRasterizer implements WorldRasterizer {
 
         for (Vector3i pos : ChunkConstants.CHUNK_REGION) {
             InfGenBiome biome = biomeFacet.get(pos);
-            chunk.setBiome(pos.x, pos.y, pos.z, biome);
+            biomeRegistry.setBiome(biome, chunk, pos);
             float density =solidityFacet.get(pos);
             
             if (density < 1){

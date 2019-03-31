@@ -18,7 +18,8 @@ package org.boundlessworlds.world.generator.rasterizers;
 import org.boundlessworlds.world.InfGenBiome;
 import org.boundlessworlds.world.generation.facets.BiomeFacet;
 import org.boundlessworlds.world.generation.facets.InfiniteGenFacet;
-import org.terasology.math.Vector3i;
+import org.terasology.biomesAPI.BiomeRegistry;
+import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
@@ -47,13 +48,14 @@ public class DebugSolidRasterizer implements WorldRasterizer {
     
     private int sea;
     private boolean iceGeneration;
+
+    private BiomeRegistry biomeRegistry;
     
     /**
      * 
      */
     public DebugSolidRasterizer(){
-    	this.sea=1;
-    	iceGeneration=true;
+    	this(1);
     }
     
     /**
@@ -61,8 +63,7 @@ public class DebugSolidRasterizer implements WorldRasterizer {
      * @param seaLevel
      */
     public DebugSolidRasterizer(int seaLevel){
-    	this.sea=seaLevel;
-    	iceGeneration=true;
+    	this(seaLevel, true);
     }
     
     /**
@@ -72,6 +73,7 @@ public class DebugSolidRasterizer implements WorldRasterizer {
     public DebugSolidRasterizer(int seaLevel, boolean ice){
     	this.sea=seaLevel;
     	iceGeneration=ice;
+    	biomeRegistry = CoreRegistry.get(BiomeRegistry.class);
     }
 
     @Override
@@ -97,8 +99,8 @@ public class DebugSolidRasterizer implements WorldRasterizer {
         InfiniteGenFacet solidityFacet = chunkRegion.getFacet(InfiniteGenFacet.class);
         for (Vector3i pos : ChunkConstants.CHUNK_REGION) {
             InfGenBiome biome = biomeFacet.get(pos);
-            chunk.setBiome(pos.x, pos.y, pos.z, biome);
-            
+            biomeRegistry.setBiome(biome, chunk, pos);
+
             float density = solidityFacet.get(pos);
             if (density <= 0) {
             	if(sea!=0){
