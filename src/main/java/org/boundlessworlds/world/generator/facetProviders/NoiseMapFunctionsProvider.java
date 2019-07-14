@@ -20,7 +20,7 @@ import javax.vecmath.Vector3f;
 import org.boundlessworlds.world.generation.facets.InfiniteGenFacet;
 import org.terasology.math.Region3i;
 import org.terasology.math.TeraMath;
-import org.terasology.math.Vector3i;
+import org.terasology.math.geom.Vector3i;
 import org.terasology.world.generation.Facet;
 import org.terasology.world.generation.FacetProvider;
 import org.terasology.world.generation.GeneratingRegion;

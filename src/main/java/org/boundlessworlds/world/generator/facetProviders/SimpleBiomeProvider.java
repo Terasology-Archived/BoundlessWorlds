@@ -19,7 +19,6 @@ import org.boundlessworlds.world.InfGenBiome;
 import org.boundlessworlds.world.generation.facets.BiomeFacet;
 import org.boundlessworlds.world.generation.facets.HumidityFacet;
 import org.boundlessworlds.world.generation.facets.TemperatureFacet;
-import org.terasology.world.biomes.Biome;
 import org.terasology.world.generation.Border3D;
 import org.terasology.world.generation.Facet;
 import org.terasology.world.generation.FacetProvider;
@@ -29,7 +28,7 @@ import org.terasology.world.generation.Requires;
 
 /**
  * Determines the biome based on temperature and humidity
- * @author Isäntä
+ * @author Isï¿½ntï¿½
  */
 @Produces(BiomeFacet.class)
 @Requires({@Facet(TemperatureFacet.class), @Facet(HumidityFacet.class)})

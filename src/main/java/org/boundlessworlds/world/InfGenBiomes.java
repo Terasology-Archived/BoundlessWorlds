@@ -15,19 +15,24 @@
  */
 package org.boundlessworlds.world;
 
-import org.terasology.world.biomes.BiomeRegistry;
-import org.terasology.world.biomes.BiomeRegistrator;
+
+import org.terasology.biomesAPI.Biome;
+import org.terasology.biomesAPI.BiomeRegistry;
+import org.terasology.entitySystem.systems.BaseComponentSystem;
+import org.terasology.registry.In;
 
 /**
  * Registers all core biomes with the engine.
  */
-public class InfGenBiomes implements BiomeRegistrator {
+public class InfGenBiomes extends BaseComponentSystem {
+
+    @In
+    BiomeRegistry biomeRegistry;
 
     @Override
-    public void registerBiomes(BiomeRegistry registry) {
-        for (InfGenBiome Biomes : InfGenBiome.values()) {
-            registry.registerBiome(Biomes);
+    public void preBegin() {
+        for (Biome biome : InfGenBiome.values()) {
+            biomeRegistry.registerBiome(biome);
         }
     }
-
 }

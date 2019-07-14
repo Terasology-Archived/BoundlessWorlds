@@ -17,7 +17,7 @@ package org.boundlessworlds.world.generator.rasterizers;
 
 import org.boundlessworlds.world.generation.facets.InfiniteGenFacet;
 import org.terasology.math.TeraMath;
-import org.terasology.math.Vector3i;
+import org.terasology.math.geom.Vector3i;
 import org.terasology.world.chunks.ChunkConstants;
 import org.terasology.world.chunks.CoreChunk;
 import org.terasology.world.generation.Facet;

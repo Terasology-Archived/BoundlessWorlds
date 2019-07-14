@@ -18,7 +18,7 @@ package org.boundlessworlds.utilities.procedural;
 import org.boundlessworlds.utilities.math.Statistics;
 import org.boundlessworlds.world.generation.facets.InfiniteGenFacet;
 import org.terasology.math.Region3i;
-import org.terasology.math.Vector3i;
+import org.terasology.math.geom.Vector3i;
 import org.terasology.world.generation.Border3D;
 import org.terasology.world.generation.Facet;
 import org.terasology.world.generation.FacetProvider;
@@ -27,7 +27,7 @@ import org.terasology.world.generation.Updates;
 
 /**
  * 
- * @author Is‰nt‰
+ * @author Is√§nt√§
  *
  */
 @Updates(@Facet(InfiniteGenFacet.class))
